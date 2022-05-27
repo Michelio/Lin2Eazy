@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Styles/style.css</file>
+        <file>Icon/crossed-swords.png</file>
+        <file>Icon/gray-circle.png</file>
+        <file>Icon/green-circle.png</file>
+        <file>Icon/orange-circle.png</file>
+        <file>Icon/red-circle.png</file>
+        <file>Icon/skull.png</file>
+        <file>Icon/arrow-down.png</file>
+        <file>Icon/arrow-up.png</file>
+        <file>Icon/settings.png</file>
+        <file>Icon/control-botting.png</file>
+        <file>Icon/gray-circle-40px.png</file>
+        <file>Icon/green-circle-40px.png</file>
+        <file>Icon/orange-circle-40px.png</file>
+        <file>Icon/red-circle-40px.png</file>
+        <file>Icon/settings-40px.png</file>
+        <file>Icon/skull-40px.png</file>
+        <file>Icon/arrow-down-30px.png</file>
+        <file>Icon/arrow-up-30px.png</file>
+        <file>Icon/control-botting-30px.png</file>
+        <file>Icon/crossed-swords-30px.png</file>
+        <file>Icon/gray-circle-30px.png</file>
+        <file>Icon/green-circle-30px.png</file>
+        <file>Icon/orange-circle-30px.png</file>
+        <file>Icon/red-circle-30px.png</file>
+        <file>Icon/settings-30px.png</file>
+        <file>Icon/skull-30px.png</file>
+    </qresource>
+</RCC>
