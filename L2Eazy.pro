@@ -21,6 +21,7 @@ SOURCES += \
     AliveEntity.cpp \
     BotLogic.cpp \
     Character.cpp \
+    Chat.cpp \
     Entity.cpp \
     GameLogic.cpp \
     Glob.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     AliveEntity.h \
     BotLogic.h \
     Character.h \
+    Chat.h \
     Entity.h \
     GameLogic.h \
     Glob.h \

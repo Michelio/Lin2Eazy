@@ -9,6 +9,7 @@ GameLogic::GameLogic()
     clientId = 0;
     target = nullptr;
     session = nullptr;
+    chat = new Chat();
 }
 
 GameLogic::GameLogic(DWORD id)
@@ -19,6 +20,7 @@ GameLogic::GameLogic(DWORD id)
     clientId = id;
     target = nullptr;
     session = nullptr;
+    chat = new Chat();
 }
 
 GameLogic::~GameLogic()
@@ -26,6 +28,7 @@ GameLogic::~GameLogic()
     qDebug("~GameLogic()");
     delete target;
     delete session;
+    delete chat;
 }
 
 bool GameLogic::IsCurrent()
@@ -41,6 +44,7 @@ void GameLogic::SetupConnections()
     connect(session->GetParser(), &PacketParser::NPCInfo, this, &GameLogic::AddNPCToList);
     connect(session->GetParser(), SIGNAL(ObjectMoved(uint32_t,Coordinates)), this, SLOT(UpdateNPCPosition(uint32_t,Coordinates)));
     connect(session->GetParser(), SIGNAL(MoveToPawn(uint32_t,uint32_t)), this, SLOT(UpdateNPCPosition(uint32_t,uint32_t)));
+    connect(session->GetParser(), SIGNAL(MessageReceived(ChatType,Message)), this, SLOT(AddMessageToChat(ChatType,Message)));
     connect(session->GetParser(), &PacketParser::RemoveNPC, this, &GameLogic::RemoveNPCFromList);
     connect(session->GetParser(), &PacketParser::CharacterTeleported, this, &GameLogic::ClearNPCList);
     connect(session->GetParser(), &PacketParser::MyTargetSelected, this, &GameLogic::SelectMyTarget);
@@ -75,6 +79,11 @@ AliveEntity *GameLogic::GetTarget()
 QList<NonPlayerCharacter> *GameLogic::GetNPCList()
 {
     return &npcList;
+}
+
+Chat *GameLogic::GetChat()
+{
+    return chat;
 }
 
 DWORD GameLogic::GetClientId()
@@ -210,6 +219,14 @@ void GameLogic::UpdateNPCPosition(uint32_t objectId, uint32_t targetObjectId)
 
             emit NPCListInfoChanged();
         }
+}
+
+void GameLogic::AddMessageToChat(ChatType chatType, Message message)
+{
+    chat->GetTab(chatType)->massageList.append(message);
+
+    if (isCurrent)
+        emit MessageReceived(chatType, message);
 }
 
 void GameLogic::ClearNPCList(uint32_t charId)

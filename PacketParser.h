@@ -7,6 +7,7 @@
 #include "Protocol.h"
 #include "Character.h"
 #include "NonPlayerCharacter.h"
+#include "Chat.h"
 
 class PacketParser : public QObject
 {
@@ -23,6 +24,7 @@ signals:
     void RemoveNPC(NonPlayerCharacter);
     void CharacterTeleported(uint32_t);
     void ObjectMoved(uint32_t, Coordinates);
+    void MessageReceived(ChatType, Message);
     void MoveToPawn(uint32_t, uint32_t);
     void TargetSelected(uint32_t, uint32_t);
     void TargetUnselected(uint32_t);

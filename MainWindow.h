@@ -23,6 +23,7 @@ public:
     void SetupConnections();
     void TargetUICleanUp();
     void CharacterUICleanUp();
+    void ChatCleanUp();
     void UpdateTargetLayout();
     void UpdateTargetNameLayout();
     void UpdateMainLayout();
@@ -40,11 +41,12 @@ private:
     NPCModel npcs;
     NPCDelegate npcsDelegate;
     GameLogic *currentClient;
+    ChatTab log;
     QModelIndex currentClientIndex;
 
 private slots:
     void SetupClientConnections(GameLogic*);
-    void UpdateLogChat();
+    void UpdateLogChat(Message);
     void UpdateCharInfo();
     void UpdateCurrentCharacterStats(int);
     void UpdateCharacterStats(DWORD);
@@ -52,6 +54,7 @@ private slots:
     void RefreshNPCList();
     void UpdateNPCInfo(int);
     void UpdateNPCPosition(uint32_t);
+    void AddMessage(ChatType,Message);
     void UpdateAccountsSectionsSizes();
     void UpdateNPCsSectionsSizes();
     void SelectTarget();

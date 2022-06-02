@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
     qRegisterMetaType<QList<QPair<uint32_t,uint32_t>>>("QList<QPair<uint32_t,uint32_t>>");
     qRegisterMetaType<HANDLE>("HANDLE");
     qRegisterMetaType<GameLogic*>("GameLogic*");
+    qRegisterMetaType<ChatType>("ChatType");
+    qRegisterMetaType<Message>("Message");
 
     BotLogic bl;
     bl.start();

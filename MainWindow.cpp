@@ -57,14 +57,16 @@ MainWindow::~MainWindow()
 void MainWindow::SetupClientConnections(GameLogic *client)
 {
     currentClient = client;
-    ui->logPTextEdit->setPlainText("connected text log");
+    log.massageList.append(Message("BOT", "New client connected."));
+    ui->logPTextEdit->appendPlainText(log.GetLastMessage());
     npcs.addValue(currentClient->GetNPCList());
     SetupConnections();
 }
 
-void MainWindow::UpdateLogChat()
+void MainWindow::UpdateLogChat(Message message)
 {
-    ui->logPTextEdit->setPlainText("text log");
+    log.massageList.append(message);
+    ui->logPTextEdit->setPlainText(log.GetLastMessage());
 }
 
 void MainWindow::SetupConnections(BotLogic *bl)
@@ -80,6 +82,7 @@ void MainWindow::SetupConnections(BotLogic *bl)
 void MainWindow::DisconnectConnections()
 {
     disconnect(currentClient, &GameLogic::CharacterInfoUpdated, this, &MainWindow::UpdateCharInfo);
+    disconnect(currentClient, SIGNAL(MessageReceived(ChatType,Message)), this, SLOT(AddMessage(ChatType,Message)));
     disconnect(currentClient, &GameLogic::NPCListInfoChanged, this, &MainWindow::RefreshNPCList);
     disconnect(currentClient, &GameLogic::NPCPositionUpdated, this, &MainWindow::UpdateNPCPosition);
     disconnect(currentClient, &GameLogic::NPCListCleared, this, &MainWindow::RefreshNPCList);
@@ -93,6 +96,7 @@ void MainWindow::DisconnectConnections()
 void MainWindow::SetupConnections()
 {
     connect(currentClient, &GameLogic::CharacterInfoUpdated, this, &MainWindow::UpdateCharInfo);
+    connect(currentClient, SIGNAL(MessageReceived(ChatType,Message)), this, SLOT(AddMessage(ChatType,Message)));
     connect(currentClient, &GameLogic::NPCListInfoChanged, this, &MainWindow::RefreshNPCList);
     connect(currentClient, &GameLogic::NPCPositionUpdated, this, &MainWindow::UpdateNPCPosition);
     connect(currentClient, &GameLogic::NPCListCleared, this, &MainWindow::RefreshNPCList);
@@ -126,6 +130,8 @@ void MainWindow::CharacterUICleanUp()
     ui->characterHpBar->setValue(0);
     ui->characterMpBar->setMaximum(100);
     ui->characterMpBar->setValue(0);
+    ui->characterExpBar->setMinimum(0);
+    ui->characterExpBar->setMaximum(100);
     ui->characterExpBar->setValue(0);
 
     ui->pAttackLabel->setText("0");
@@ -145,6 +151,14 @@ void MainWindow::CharacterUICleanUp()
     ui->witLabel->setText("0");
     ui->menLabel->setText("0");
     ui->intLabel->setText("0");
+}
+
+void MainWindow::ChatCleanUp()
+{
+    ui->localPTextEdit->clear();
+    ui->tradePTextEdit->clear();
+    ui->partyPTextEdit->clear();
+    ui->clanPTextEdit->clear();
 }
 
 void MainWindow::UpdateTargetLayout()
@@ -306,6 +320,46 @@ void MainWindow::UpdateNPCPosition(uint32_t objectId)
 
 }
 
+void MainWindow::AddMessage(ChatType type, Message message)
+{
+    switch(type)
+    {
+        case GENERAL:
+        case SHOUT:
+        case WHISPER:
+        case ANNOUNCEMENT:
+            ui->localPTextEdit->appendPlainText(message.time.toString() + "   "
+                                               + message.owner + ": "
+                                               + message.text);
+            break;
+
+        case PARTY:
+            ui->partyPTextEdit->appendPlainText(message.time.toString() + "   "
+                                               + message.owner + ": "
+                                               + message.text);
+            break;
+
+        case TRADE:
+            ui->tradePTextEdit->appendPlainText(message.time.toString() + "   "
+                                               + message.owner + ": "
+                                               + message.text);
+            break;
+
+        case ALLIANCE:
+        case CLAN:
+            ui->tradePTextEdit->appendPlainText(message.time.toString() + "   "
+                                               + message.owner + ": "
+                                               + message.text);
+            break;
+
+        default:
+            ui->logPTextEdit->appendPlainText(message.time.toString() + "   "
+                                               + message.owner + ": "
+                                               + message.text);
+            break;
+    }
+}
+
 void MainWindow::UpdateAccountsSectionsSizes()
 {
     ui->accountsTableView->horizontalHeader()->setMinimumSectionSize(ui->accountsTableView->geometry().width() * 0.25);
@@ -357,11 +411,14 @@ void MainWindow::UpdateAccountInfo(DWORD id)
 
 void MainWindow::RemoveAccountFromList(GameLogic* account)
 {
+    log.massageList.append(Message("BOT", "Client disconnected."));
+    ui->logPTextEdit->appendPlainText(log.GetLastMessage());
     accounts.Remove(account);
     if (account->IsCurrent())
     {
         npcs.clear();
         TargetUICleanUp();
+        ChatCleanUp();
         CharacterUICleanUp();
     }
 }

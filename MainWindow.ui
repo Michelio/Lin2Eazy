@@ -2127,7 +2127,7 @@
             <enum>QTabWidget::South</enum>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="logChatSubTab">
             <attribute name="title">
@@ -2201,6 +2201,9 @@
                <property name="acceptDrops">
                 <bool>false</bool>
                </property>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
                <property name="undoRedoEnabled">
                 <bool>false</bool>
                </property>
@@ -2211,9 +2214,9 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="privateChatSubTab">
+           <widget class="QWidget" name="tradeChatSubTab">
             <attribute name="title">
-             <string>Private</string>
+             <string>Trade</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <property name="leftMargin">
@@ -2229,7 +2232,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QPlainTextEdit" name="privatePTextEdit">
+              <widget class="QPlainTextEdit" name="tradePTextEdit">
                <property name="font">
                 <font>
                  <family>Times New Roman</family>

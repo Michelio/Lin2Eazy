@@ -6,6 +6,7 @@
 #include "Session.h"
 #include "Character.h"
 #include "datasource.h"
+#include "Chat.h"
 
 enum Status
 {
@@ -28,6 +29,7 @@ private:
     Character character;
     AliveEntity *target;
     QList<NonPlayerCharacter> npcList;
+    Chat *chat;
 
 public:
     GameLogic();
@@ -42,6 +44,7 @@ public:
     Character GetCharacter();
     AliveEntity *GetTarget();
     QList<NonPlayerCharacter> *GetNPCList();
+    Chat *GetChat();
     DWORD GetClientId();
 
     // Setters
@@ -62,6 +65,7 @@ signals:
     void CharacterStatsUpdated(DWORD);
     void NPCListInfoChanged();
     void NPCPositionUpdated(uint32_t);
+    void MessageReceived(ChatType, Message);
     void NPCListCleared();
     void TargetSelected();
     void TargetUnselected();
@@ -83,6 +87,7 @@ private slots:
     void RemoveNPCFromList(NonPlayerCharacter); // TODO RemoveObject instead
     void UpdateNPCPosition(uint32_t, Coordinates);
     void UpdateNPCPosition(uint32_t, uint32_t);
+    void AddMessageToChat(ChatType, Message);
     void ClearNPCList(uint32_t);
     void SelectTarget(uint32_t, uint32_t);
     void UnselectTarget(uint32_t);

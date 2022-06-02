@@ -53,18 +53,13 @@ uint64_t PacketParser::ReadBytes64(size_t& position, BYTE* packet)
 
 QString PacketParser::ReadBytesStr(size_t& position, BYTE* packet)
 {
-    QString value;
+    QString string;
 
-    while (true)
-    {
-        if ((int)packet[position] == 0)
-            break;
-        value.append((char*)(&packet[position]));
-        position += 2;
-    }
+    string.append(QString::fromUtf16((char16_t*)(&packet[position])));
+    SkipBytes(position, string.size() * sizeof(char16_t));
     position += 2;
 
-    return value;
+    return string;
 }
 
 void PacketParser::ParsePacket(BYTE* packet)
@@ -315,6 +310,22 @@ void PacketParser::ParsePacket(BYTE* packet)
             Coordinates destPosition(x, y, z);
 
             emit ObjectMoved(objId, destPosition);
+        }
+
+        else if (packetID == 0x4A)
+        {
+            uint32_t objId = ReadBytes32(pos, packet);
+            ChatType chatType = (ChatType)ReadBytes32(pos, packet);
+            QString owner = ReadBytesStr(pos, packet);
+            QString text = ReadBytesStr(pos, packet);
+
+            if (objId == 0)
+            {
+                chatType = ANNOUNCEMENT;
+                owner = "Announcement";
+            }
+
+            emit MessageReceived(chatType, Message(owner, text));
         }
 
         else if (packetID == 0x60)
